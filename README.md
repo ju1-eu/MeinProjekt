@@ -1,1 +1,2 @@
-# /Users/jan/daten/Programmieren/Elektronik-Programmierung/Roboter-Arduino/05-Elektrik-Elektronik-Dr.Dalmaris/Git/MeinProjekt
+# MeinProjekt Repository
+This is the README for the MeinProjekt repository.
