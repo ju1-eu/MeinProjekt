@@ -8,13 +8,6 @@ import requests
 
 """
 python3 git_hilfsprogramm.py MeinProjekt
-# neu auf Github erstellen
-GitHub CLI-Tool (gh)
-brew install gh
-gh auth login
-gh auth status
-gh auth refresh -h github.com -s delete_repo
-gh repo create MeinProjekt2 --public
 python3 git_hilfsprogramm.py MeinProjekt2
 """
 
@@ -107,29 +100,6 @@ def lokales_repo_mit_github_verknüpfen(ordner):
 
 
 
-
-def ist_git_repo(ordner):
-    """Überprüft, ob das angegebene Verzeichnis ein gültiges Git-Repository ist."""
-    status_befehl = f"git -C {ordner} status"
-    prozess = subprocess.run(status_befehl, shell=True, text=True, capture_output=True)
-    return prozess.returncode == 0
-
-def repository_klonen(ordner):
-    if os.path.exists(ordner):
-        entscheidung = input(f"Das Verzeichnis {ordner} existiert bereits. Möchten Sie es überschreiben und das Repository klonen? (ja/nein): ").lower()
-        if entscheidung != "ja":
-            print("Abbruch. Das Skript wird beendet.")
-            sys.exit()
-        else:
-            shutil.rmtree(ordner)  # Verzeichnis löschen
-
-    os.makedirs(ordner, exist_ok=True)  # Verzeichnis erstellen, falls es nicht existiert
-    ausführen_befehl(f"git clone {GITHUB_URL}{ordner} .", ordner)
-
-
-
-
-
 def commiten_und_pushen(ordner):
     dateien = input("Welche Dateien möchten Sie hinzufügen? (z.B. 'file1.txt file2.txt' oder '.' für alle): ")
     commit_nachricht = input("Geben Sie eine Commit-Nachricht ein: ")
@@ -170,8 +140,38 @@ def änderungen_commiten(ordner):
     ausführen_befehl(f'git commit -m "{nachricht}"', ordner)
 
 
-def repo_klonen():
-    ausführen_befehl(f"git clone {GITHUB_URL} + ordner", ordner='.')
+def repo_klonen(ordner):
+    repositories = get_user_repositories(get_username_from_url(GITHUB_URL))
+    
+    if repositories:
+        print("Verfügbare Repositories zum Klonen:\n")
+        for idx, repo in enumerate(repositories, start=1):
+            repo_name = repo["name"]
+            repo_url = GITHUB_URL + repo_name
+            print(f"{idx}. Repository: {repo_name}\n   URL: {repo_url}\n")
+
+        try:
+            auswahl = int(input("Geben Sie die Nummer des Repositories ein, das Sie klonen möchten, oder 0 zum Abbrechen: "))
+            
+            if 0 < auswahl <= len(repositories):
+                repo_name = repositories[auswahl - 1]["name"]
+
+                repo_url = GITHUB_URL + repo_name
+                print(f"Klone das Repository '{repo_name}' von der URL '{repo_url}' in den Ordner '{ordner}'.")
+                
+                ausführen_befehl(f"git clone '{repo_url}' .", ordner)
+
+                print(f"Repository '{repo_name}' wurde erfolgreich in den Ordner '{ordner}' geklont.")
+            elif auswahl == 0:
+                print("Befehl wurde abgebrochen.")
+            else:
+                print("Ungültige Auswahl.")
+        except ValueError:
+            print("Ungültige Eingabe. Bitte geben Sie eine Nummer ein.")
+    else:
+        print("Keine öffentlichen Repositories gefunden.")
+
+
 
 def änderungen_pushen(ordner):
     ausführen_befehl("git push -u origin main", ordner)
@@ -267,6 +267,14 @@ def get_user_repositories(username):
         print(f"Fehler beim Abrufen der Repositories für Benutzer {username}. Statuscode: {response.status_code}")
         return []
     
+def get_username_from_url(url):
+    match = re.match(r"https://github.com/(.*)/$", url)
+    if match:
+        return match.group(1)
+    return None
+
+    
+
 def github_repositorys_anzeigen():
     username_match = re.match(r"https://github.com/(.*)/$", GITHUB_URL)
     if username_match:
@@ -275,14 +283,17 @@ def github_repositorys_anzeigen():
         
         if repositories:
             print(f"Öffentliche Repositories für Benutzer {username}:\n")
-            for repo in repositories:
+            for index, repo in enumerate(repositories, start=1):
                 repo_name = repo["name"]
                 repo_url = GITHUB_URL + repo_name
-                print(f"Repository: {repo_name}\nURL: {repo_url}\n")
+                print(f"{index}. Repository: {repo_name}\nURL: {repo_url}\n")
         else:
             print("Keine öffentlichen Repositories gefunden.")
     else:
         print("Ungültige GITHUB_URL. Stellen Sie sicher, dass der Benutzername in der URL enthalten ist.")
+
+
+
 
 def github_repository_löschen():
     repository_name = input("Geben Sie den Namen des zu löschenden Repositories ein: ")
@@ -353,7 +364,7 @@ def menü(ordner):
         elif wahl == "6":
             änderungen_pullen(ordner)
         elif wahl == "7":
-            repository_klonen(ordner)
+            repo_klonen(ordner)
         elif wahl == "8":
             branch_erstellen(ordner)
         elif wahl == "9":
