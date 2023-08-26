@@ -1,5 +1,7 @@
 # README
 
+update: 26-8-23
+
 Das Skript `git_hilfsprogramm.py` scheint ein Hilfsprogramm für Git zu sein, das eine Benutzeroberfläche im Terminal bietet, um verschiedene Git-Aufgaben durchzuführen. Ich werde es jetzt detailliert beschreiben:
 
 ### Beschreibung:

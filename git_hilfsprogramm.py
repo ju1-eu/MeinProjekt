@@ -178,8 +178,14 @@ def änderungen_pushen(ordner):
 
 
 def änderungen_pullen(ordner):
+    prozess = subprocess.run("git status --porcelain", shell=True, text=True, capture_output=True, cwd=os.path.join(os.getcwd(), ordner))
+    if prozess.stdout.strip():
+        print("Es gibt uncommitierte Änderungen im Arbeitsverzeichnis. Bitte committen oder staschen Sie diese, bevor Sie Änderungen ziehen.")
+        return
+
     remote_branch = input("Geben Sie den Remote-Branch ein, von dem Sie Änderungen ziehen möchten: ")
     ausführen_befehl(f"git pull origin {remote_branch}", os.path.join(os.getcwd(), ordner))
+
 
 
 
@@ -242,7 +248,14 @@ def log_anzeigen(ordner):
 
 
 def status_anzeigen(ordner):
-    ausführen_befehl("git status", os.path.join(os.getcwd(), ordner))
+    print("Erklärung")
+    print("## zeigt den aktuellen Branch an, gefolgt von den Änderungen in Bezug auf den Remote-Branch.")
+    print("M - Geänderte Datei (modifiziert)")
+    print("A - Hinzugefügte Datei (neu hinzugefügt)")
+    print("D - Gelöschte Datei")
+    print("?? - Ungetrackte Datei")
+    drucke_trennlinie()
+    ausführen_befehl("git status -s -b -u", os.path.join(os.getcwd(), ordner))
     
 def get_user_repositories(username):
     response = requests.get(f"https://api.github.com/users/{username}/repos")
@@ -253,6 +266,7 @@ def get_user_repositories(username):
     else:
         print(f"Fehler beim Abrufen der Repositories für Benutzer {username}. Statuscode: {response.status_code}")
         return []
+    
 def github_repositorys_anzeigen():
     username_match = re.match(r"https://github.com/(.*)/$", GITHUB_URL)
     if username_match:
