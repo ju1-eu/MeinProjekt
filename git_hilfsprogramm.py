@@ -258,20 +258,33 @@ def status_anzeigen(ordner):
     ausführen_befehl("git status -s -b -u", os.path.join(os.getcwd(), ordner))
     
 def get_user_repositories(username):
-    response = requests.get(f"https://api.github.com/users/{username}/repos")
+    page_number = 1
+    repositories = []
     
-    if response.status_code == 200:
-        repositories = response.json()
-        return repositories
-    else:
-        print(f"Fehler beim Abrufen der Repositories für Benutzer {username}. Statuscode: {response.status_code}")
-        return []
+    while True:
+        response = requests.get(f"https://api.github.com/users/{username}/repos?page={page_number}&per_page=100")
+        
+        if response.status_code == 200:
+            current_page_repos = response.json()
+            
+            # Wenn die aktuelle Seite keine Repositories hat, brechen wir die Schleife ab.
+            if not current_page_repos:
+                break
+            
+            repositories.extend(current_page_repos)
+            page_number += 1
+        else:
+            print(f"Fehler beim Abrufen der Repositories für Benutzer {username} auf Seite {page_number}. Statuscode: {response.status_code}")
+            break
+    
+    return repositories
     
 def get_username_from_url(url):
-    match = re.match(r"https://github.com/(.*)/$", url)
+    match = re.match(r"https://github.com/([^/]+)/?$", url)
     if match:
         return match.group(1)
     return None
+
 
     
 
