@@ -40,6 +40,105 @@ python3 git_hilfsprogramm.py MeinProjekt
 
 Nachdem das Skript gestartet ist, zeigt es ein Menü mit den oben beschriebenen Optionen an. Der Benutzer kann eine Option auswählen, indem er die entsprechende Nummer eingibt.
 
+```
+--- Git-Hilfsprogramm ---
+1. Neues lokales Repository erstellen
+2. Neues Repository auf GitHub verbinden
+3. Änderungen hinzufügen (git add)
+4. Änderungen commiten (git commit)
+5. Änderungen pushen (git push)
+6. Änderungen pullen (git pull)
+7. Repository klonen
+8. Branch erstellen
+9. Zu einem Branch wechseln
+10. Alle Branches auflisten
+11. Merge eines Branches
+12. Änderungen stashen
+13. Merge-Konflikte anzeigen
+14. Pull Requests auflisten
+15. .gitignore-Dateiinhalt anzeigen
+16. .gitignore verwalten
+17. Git-Logs anzeigen
+18. Git-Status anzeigen
+19. GitHub-Repositorys anzeigen
+20. GitHub-Repositorys löschen
+21. Beenden
+#########################################################
+```
+
+**Git-Status anzeigen**
+
+```
+# Wählen Sie eine Option: 18
+Erklärung
+## zeigt den aktuellen Branch an, gefolgt von den Änderungen in Bezug auf den Remote-Branch.
+M - Geänderte Datei (modifiziert)
+A - Hinzugefügte Datei (neu hinzugefügt)
+D - Gelöschte Datei
+?? - Ungetrackte Datei
+#########################################################
+## main...origin/main
+ M .gitignore
+ M README.md
+ M git_hilfsprogramm.py
+```
+
+**Änderungen hinzufügen (git add) und commiten (git commit) und pushen (git push)**
+
+```
+# Wählen Sie eine Option: 3
+Welche Datei möchten Sie hinzufügen? (Alles: .): .
+
+# Wählen Sie eine Option: 4
+Geben Sie eine Commit-Nachricht ein: script fehlerfrei und Beschreibung erstellt
+[main b0309c0] script fehlerfrei und Beschreibung erstellt
+ 3 files changed, 717 insertions(+), 38 deletions(-)
+
+# Wählen Sie eine Option: 5
+Branch 'main' folgt nun 'origin/main'.
+```
+
+**Repository klonen**
+
+```
+# script
+python3 git_hilfsprogramm.py MeinProjekt3
+
+# Wählen Sie eine Option: 7
+Verfügbare Repositories zum Klonen:
+
+17. Repository: MeinProjekt2
+   URL: https://github.com/ju1-eu/MeinProjekt2
+
+Geben Sie die Nummer des Repositories ein, das Sie klonen möchten, oder 0 zum Abbrechen: 17
+Klone das Repository 'MeinProjekt2' von der URL 'https://github.com/ju1-eu/MeinProjekt2' in den Ordner 'MeinProjekt3'.
+
+Repository 'MeinProjekt2' wurde erfolgreich in den Ordner 'MeinProjekt3' geklont.
+```
+
+**Neues lokales Repository erstellen**
+
+```
+# Wählen Sie eine Option: 1
+Leeres Git-Repository in /Users/jan/daten/Programmieren/Elektronik-Programmierung/Roboter-Arduino/05-Elektrik-Elektronik-Dr.Dalmaris/Git/MeinProjekt2/.git/ initialisiert
+
+
+[main (Root-Commit) d0955c1] first commit
+ 1 file changed, 2 insertions(+)
+ create mode 100644 README.md
+```
+
+**Neues Repository auf GitHub verbinden**
+
+```
+# Wählen Sie eine Option: 2
+Möchten Sie ein bereits vorhandenes GitHub-Repository verwenden oder ein neues erstellen und verknüpfen? (vorhanden/neu): neu
+https://github.com/ju1-eu/MeinProjekt2
+Branch 'main' folgt nun 'origin/main'.
+
+Das lokale Repository 'MeinProjekt2' wurde erfolgreich erstellt und mit einem neuen GitHub-Repository verknüpft.
+```
+
 ### Hinweis:
 
 Einige Funktionen des Skripts können von externen Bibliotheken oder Tools abhängen (z.B. `requests` oder `gh`), die installiert sein müssen, damit das Skript ordnungsgemäß funktioniert.
